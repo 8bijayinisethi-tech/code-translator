@@ -1,0 +1,15 @@
+# Python
+backend/venv/
+backend/.env
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Environment
+.env
+.env.local
+.env.production
