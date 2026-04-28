@@ -457,31 +457,23 @@ export default function App() {
   };
 
   const handleCopy = () => {
-  try {
-    // Modern way (https only)
-    navigator.clipboard.writeText(outputCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  } catch {
-    // Fallback for http://
-    const textarea = document.createElement("textarea");
-    textarea.value = outputCode;
-    textarea.style.position = "fixed";
-    textarea.style.top = "0";
-    textarea.style.left = "0";
-    textarea.style.opacity = "0";
-    document.body.appendChild(textarea);
-    textarea.focus();
-    textarea.select();
-    try {
-      document.execCommand("copy");
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      alert("Copy failed — please select the code manually and press Ctrl+C");
-    }
-    document.body.removeChild(textarea);
-  }
+  try {const handleCopy = () => {
+  // Direct fallback — works on both http and https
+  const textarea = document.createElement("textarea");
+  textarea.value = outputCode;
+  textarea.style.position = "fixed";
+  textarea.style.top = "0";
+  textarea.style.left = "0";
+  textarea.style.width = "1px";
+  textarea.style.height = "1px";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textarea);
+  setCopied(true);
+  setTimeout(() => setCopied(false), 1500);
   };
 
   const loadExample = (ex) => {
