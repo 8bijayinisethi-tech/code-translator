@@ -446,15 +446,36 @@ export default function App() {
     setAgentStates(prev => prev.map((a, idx) => idx === i ? { status, message } : a));
 
   const handleSwap = () => {
-    setFromLang(toLang); setToLang(fromLang);
-    if (outputCode) setSourceCode(outputCode);
-    setOutputCode(""); setAnalysis(""); setReviewNote("");
+  const prevFrom = fromLang;
+  const prevTo = toLang;
+  const prevOutput = outputCode;
+
+  setFromLang(prevTo);
+  setToLang(prevFrom);
+
+  if (prevOutput) {
+    setSourceCode(prevOutput);
+  }
+
+  setOutputCode("");
+  setAnalysis("");
+  setReviewNote("");
+  setAgentStates(DEFAULT_STATES);
+  setTimeTaken(null);
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(outputCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+  const textarea = document.createElement("textarea");
+  textarea.value = outputCode;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textarea);
+  setCopied(true);
+  setTimeout(() => setCopied(false), 1500);
   };
 
   const loadExample = (ex) => {
