@@ -446,43 +446,54 @@ export default function App() {
     setAgentStates(prev => prev.map((a, idx) => idx === i ? { status, message } : a));
 
   const handleSwap = () => {
-  const prevFrom = fromLang;
-  const prevTo = toLang;
-  const prevOutput = outputCode;
-
-  setFromLang(prevTo);
-  setToLang(prevFrom);
-
-  if (prevOutput) {
-    setSourceCode(prevOutput);
-  }
-
+  setFromLang(toLang);
+  setToLang(fromLang);
+  setSourceCode("");
   setOutputCode("");
   setAnalysis("");
   setReviewNote("");
-  setAgentStates(DEFAULT_STATES);
   setTimeTaken(null);
+  setAgentStates(DEFAULT_STATES);
   };
 
   const handleCopy = () => {
-  const textarea = document.createElement("textarea");
-  textarea.value = outputCode;
-  textarea.style.position = "fixed";
-  textarea.style.opacity = "0";
-  document.body.appendChild(textarea);
-  textarea.focus();
-  textarea.select();
-  document.execCommand("copy");
-  document.body.removeChild(textarea);
-  setCopied(true);
-  setTimeout(() => setCopied(false), 1500);
+  try {
+    // Modern way (https only)
+    navigator.clipboard.writeText(outputCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  } catch {
+    // Fallback for http://
+    const textarea = document.createElement("textarea");
+    textarea.value = outputCode;
+    textarea.style.position = "fixed";
+    textarea.style.top = "0";
+    textarea.style.left = "0";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+      document.execCommand("copy");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      alert("Copy failed — please select the code manually and press Ctrl+C");
+    }
+    document.body.removeChild(textarea);
+  }
   };
 
   const loadExample = (ex) => {
-    setFromLang(ex.from); setToLang(ex.to);
-    setSourceCode(ex.code);
-    setOutputCode(""); setAnalysis(""); setReviewNote(""); setError("");
-    setAgentStates(DEFAULT_STATES);
+  setFromLang(ex.from);
+  setToLang(ex.to);
+  setSourceCode(ex.code);
+  setOutputCode("");
+  setAnalysis("");
+  setReviewNote("");
+  setError("");
+  setTimeTaken(null);
+  setAgentStates(DEFAULT_STATES);
   };
 
   const handleTranslate = async () => {
